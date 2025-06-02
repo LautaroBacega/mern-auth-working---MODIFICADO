@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
-import { useSelector } from "react-redux"
-import { User, Home, Info } from "lucide-react"
+import { useSelector } from "../context/user-context.tsx"
+import { User, Home, Info } from 'lucide-react'
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user)

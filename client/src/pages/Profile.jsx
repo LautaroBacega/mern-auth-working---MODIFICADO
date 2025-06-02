@@ -1,20 +1,11 @@
 "use client"
 
-import { useSelector } from "react-redux"
+import { useSelector } from "../context/user-context.tsx"
 import { useRef, useState, useEffect } from "react"
-import { Camera, User, Mail, Lock, Trash2, LogOut, CheckCircle, AlertCircle } from "lucide-react"
+import { Camera, User, Mail, Lock, Trash2, LogOut, CheckCircle, AlertCircle } from 'lucide-react'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
 import { app } from "../firebase"
-import { useDispatch } from "react-redux"
-import {
-  updateUserStart,
-  updateUserSuccess,
-  updateUserFailure,
-  deleteUserStart,
-  deleteUserSuccess,
-  deleteUserFailure,
-  signOut,
-} from "../redux/user/userSlice"
+import { useDispatch } from "../context/user-context.tsx"
 
 export default function Profile() {
   const dispatch = useDispatch()
@@ -62,7 +53,7 @@ export default function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      dispatch(updateUserStart())
+      dispatch.updateUserStart()
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
         method: "POST",
         headers: {
@@ -72,37 +63,37 @@ export default function Profile() {
       })
       const data = await res.json()
       if (data.success === false) {
-        dispatch(updateUserFailure(data))
+        dispatch.updateUserFailure(data)
         return
       }
-      dispatch(updateUserSuccess(data))
+      dispatch.updateUserSuccess(data)
       setUpdateSuccess(true)
     } catch (error) {
-      dispatch(updateUserFailure(error))
+      dispatch.updateUserFailure(error)
     }
   }
 
   const handleDeleteAccount = async () => {
     try {
-      dispatch(deleteUserStart())
+      dispatch.deleteUserStart()
       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
         method: "DELETE",
       })
       const data = await res.json()
       if (data.success === false) {
-        dispatch(deleteUserFailure(data))
+        dispatch.deleteUserFailure(data)
         return
       }
-      dispatch(deleteUserSuccess(data))
+      dispatch.deleteUserSuccess()
     } catch (error) {
-      dispatch(deleteUserFailure(error))
+      dispatch.deleteUserFailure(error)
     }
   }
 
   const handleSignOut = async () => {
     try {
       await fetch("/api/auth/signout")
-      dispatch(signOut())
+      dispatch.signOut()
     } catch (error) {
       console.log(error)
     }
@@ -210,8 +201,7 @@ export default function Profile() {
                 <input
                   type="password"
                   id="password"
-                  placeholder="Dejá en blanco para mantener la contraseña actual.
-"
+                  placeholder="Dejá en blanco para mantener la contraseña actual."
                   className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   onChange={handleChange}
                 />

@@ -2,9 +2,8 @@
 
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { LogIn, Mail, Lock } from "lucide-react"
-import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice"
-import { useDispatch, useSelector } from "react-redux"
+import { LogIn, Mail, Lock } from 'lucide-react'
+import { useDispatch, useSelector } from "../context/user-context.tsx"
 import OAuth from "../components/OAuth"
 
 export default function SignIn() {
@@ -21,7 +20,7 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      dispatch(signInStart())
+      dispatch.signInStart()
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -31,13 +30,13 @@ export default function SignIn() {
       })
       const data = await res.json()
       if (data.success === false) {
-        dispatch(signInFailure(data))
+        dispatch.signInFailure(data)
         return
       }
-      dispatch(signInSuccess(data))
+      dispatch.signInSuccess(data)
       navigate("/")
     } catch (error) {
-      dispatch(signInFailure(error))
+      dispatch.signInFailure(error)
     }
   }
 
