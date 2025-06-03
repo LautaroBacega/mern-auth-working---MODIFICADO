@@ -147,6 +147,7 @@ export default function Profile() {
                   placeholder="Nombre"
                   className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   onChange={handleChange}
+                  required
                 />
               </div>
 
@@ -163,6 +164,7 @@ export default function Profile() {
                   placeholder="Email"
                   className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   onChange={handleChange}
+                  required
                 />
               </div>
 
