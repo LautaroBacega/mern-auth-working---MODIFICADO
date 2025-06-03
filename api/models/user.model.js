@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose"
 
 const userSchema = new mongoose.Schema(
   {
@@ -18,13 +18,34 @@ const userSchema = new mongoose.Schema(
     },
     profilePicture: {
       type: String,
-      default:
-        'https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg',
+      default: "https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg",
+    },
+    // Email verification fields
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verifyOtp: {
+      type: String,
+      default: "",
+    },
+    verifyOtpExpireAt: {
+      type: Number,
+      default: 0,
+    },
+    // Password reset fields
+    resetOtp: {
+      type: String,
+      default: "",
+    },
+    resetOtpExpireAt: {
+      type: Number,
+      default: 0,
     },
   },
-  { timestamps: true }
-);
+  { timestamps: true },
+)
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema)
 
-export default User;
+export default User
