@@ -1,9 +1,11 @@
+"use client"
+
 import { Link } from "react-router-dom"
-import { useSelector } from "../context/user-context.tsx"
-import { User, Home, Info } from 'lucide-react'
+import { useUser } from "../hooks/useUser"
+import { User, Home, Info } from "lucide-react"
 
 export default function Header() {
-  const { currentUser } = useSelector((state) => state.user)
+  const { currentUser } = useUser()
 
   return (
     <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 shadow-lg border-b border-slate-700">

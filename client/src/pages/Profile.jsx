@@ -1,22 +1,20 @@
 "use client"
 
-import { useSelector } from "../context/user-context.tsx"
+import { useUser } from "../hooks/useUser"
 import { useRef, useState, useEffect } from "react"
-import { Camera, User, Mail, Lock, Trash2, LogOut, CheckCircle, AlertCircle } from 'lucide-react'
+import { Camera, User, Mail, Lock, Trash2, LogOut, CheckCircle, AlertCircle } from "lucide-react"
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
 import { app } from "../firebase"
-import { useDispatch } from "../context/user-context.tsx"
 
 export default function Profile() {
-  const dispatch = useDispatch()
+  const { currentUser, updateUser, deleteUser, signOut, loading } = useUser()
   const fileRef = useRef(null)
   const [image, setImage] = useState(undefined)
   const [imagePercent, setImagePercent] = useState(0)
   const [imageError, setImageError] = useState(false)
   const [formData, setFormData] = useState({})
   const [updateSuccess, setUpdateSuccess] = useState(false)
-
-  const { currentUser, loading, error } = useSelector((state) => state.user)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     if (image) {
@@ -53,50 +51,26 @@ export default function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      dispatch.updateUserStart()
-      const res = await fetch(`/api/user/update/${currentUser._id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
-      const data = await res.json()
-      if (data.success === false) {
-        dispatch.updateUserFailure(data)
-        return
-      }
-      dispatch.updateUserSuccess(data)
+      setError(null)
+      setUpdateSuccess(false)
+      await updateUser(currentUser._id, formData)
       setUpdateSuccess(true)
     } catch (error) {
-      dispatch.updateUserFailure(error)
+      setError(error.message)
     }
   }
 
   const handleDeleteAccount = async () => {
     try {
-      dispatch.deleteUserStart()
-      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-        method: "DELETE",
-      })
-      const data = await res.json()
-      if (data.success === false) {
-        dispatch.deleteUserFailure(data)
-        return
-      }
-      dispatch.deleteUserSuccess()
+      setError(null)
+      await deleteUser(currentUser._id)
     } catch (error) {
-      dispatch.deleteUserFailure(error)
+      setError(error.message)
     }
   }
 
   const handleSignOut = async () => {
-    try {
-      await fetch("/api/auth/signout")
-      dispatch.signOut()
-    } catch (error) {
-      console.log(error)
-    }
+    await signOut()
   }
 
   return (
@@ -240,7 +214,7 @@ export default function Profile() {
           {/* Status Messages */}
           {error && (
             <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-700 text-sm text-center">Algo salió mal!</p>
+              <p className="text-red-700 text-sm text-center">{error}</p>
             </div>
           )}
 

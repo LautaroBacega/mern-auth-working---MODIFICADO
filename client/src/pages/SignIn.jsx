@@ -2,16 +2,15 @@
 
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { LogIn, Mail, Lock } from 'lucide-react'
-import { useDispatch, useSelector } from "../context/user-context.tsx"
+import { LogIn, Mail, Lock } from "lucide-react"
+import { useUser } from "../hooks/useUser"
 import OAuth from "../components/OAuth"
 
 export default function SignIn() {
   const [formData, setFormData] = useState({})
-  const { loading, error } = useSelector((state) => state.user)
-
+  const [error, setError] = useState(null)
+  const { signIn, loading } = useUser()
   const navigate = useNavigate()
-  const dispatch = useDispatch()
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value })
@@ -20,23 +19,11 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      dispatch.signInStart()
-      const res = await fetch("/api/auth/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
-      const data = await res.json()
-      if (data.success === false) {
-        dispatch.signInFailure(data)
-        return
-      }
-      dispatch.signInSuccess(data)
+      setError(null)
+      await signIn(formData)
       navigate("/")
     } catch (error) {
-      dispatch.signInFailure(error)
+      setError(error.message)
     }
   }
 
@@ -113,7 +100,7 @@ export default function SignIn() {
           {/* Error Message */}
           {error && (
             <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-700 text-sm text-center">{error.message || "Algo salió mal!"}</p>
+              <p className="text-red-700 text-sm text-center">{error}</p>
             </div>
           )}
         </div>

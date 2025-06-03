@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { UserPlus, Mail, Lock, User } from 'lucide-react'
+import { UserPlus, Mail, Lock, User } from "lucide-react"
 import OAuth from "../components/OAuth"
 
 export default function SignUp() {
@@ -28,7 +28,6 @@ export default function SignUp() {
         body: JSON.stringify(formData),
       })
       const data = await res.json()
-      console.log(data)
       setLoading(false)
       if (data.success === false) {
         setError(true)

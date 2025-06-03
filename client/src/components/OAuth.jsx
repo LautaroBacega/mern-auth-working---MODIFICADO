@@ -1,38 +1,33 @@
-import { GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth';
-import { app } from '../firebase';
-import { useDispatch } from '../context/user-context.tsx';
-import { useNavigate } from 'react-router-dom';
+"use client"
+
+import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth"
+import { app } from "../firebase"
+import { useUser } from "../hooks/useUser"
+import { useNavigate } from "react-router-dom"
 
 export default function OAuth() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  
+  const { signInWithGoogle } = useUser()
+  const navigate = useNavigate()
+
   const handleGoogleClick = async () => {
     try {
-      const provider = new GoogleAuthProvider();
-      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider()
+      const auth = getAuth(app)
 
-      const result = await signInWithPopup(auth, provider);
-      const res = await fetch('/api/auth/google', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: result.user.displayName,
-          email: result.user.email,
-          photo: result.user.photoURL,
-        }),
-      });
-      const data = await res.json();
-      console.log(data);
-      dispatch.signInSuccess(data);
-      navigate('/');
+      const result = await signInWithPopup(auth, provider)
+
+      await signInWithGoogle({
+        name: result.user.displayName,
+        email: result.user.email,
+        photo: result.user.photoURL,
+      })
+
+      navigate("/")
     } catch (error) {
-      console.log('could not login with google', error);
+      console.log("could not login with google", error)
     }
-  };
-  
+  }
+
   return (
     <button
       type="button"
@@ -59,5 +54,5 @@ export default function OAuth() {
       </svg>
       Continuar con Google
     </button>
-  );
+  )
 }

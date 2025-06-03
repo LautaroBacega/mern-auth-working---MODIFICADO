@@ -1,11 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App.jsx';
-import './index.css';
-import { UserProvider } from './context/user-context.tsx';
+import ReactDOM from "react-dom/client"
+import App from "./App.jsx"
+import "./index.css"
+import { UserContextProvider } from "./context/UserContext.jsx"
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <UserProvider>
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <UserContextProvider>
     <App />
-  </UserProvider>
-);
+  </UserContextProvider>,
+)
